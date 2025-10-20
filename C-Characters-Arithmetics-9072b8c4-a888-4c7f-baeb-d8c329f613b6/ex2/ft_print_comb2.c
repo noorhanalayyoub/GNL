@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: nalayyou <nalayyou@learner.42.tech>        +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/10/20 14:31:38 by nalayyou          #+#    #+#             */
-/*   Updated: 2025/10/20 14:32:09 by nalayyou         ###   ########.fr       */
+/*   Created: 2025/10/20 14:46:26 by nalayyou          #+#    #+#             */
+/*   Updated: 2025/10/20 14:46:39 by nalayyou         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@ void	ft_putchar(char c)
 }
 
 void	ft_putnbr(int nb)
+
 {
 	long int	nb2;
 
@@ -59,6 +60,7 @@ void	printtwo(int a, int b)
 }
 
 void	ft_print_comb2(void)
+
 {
 	long int	a;
 	long int	b;
@@ -71,7 +73,9 @@ void	ft_print_comb2(void)
 		{
 			if (a != b)
 				printtwo(a, b);
-			if (a != 98 && b != 99)
+			if (a == 98 && b == 99)
+				return ;
+			else
 			{
 				write(1, ",", 1);
 				write(1, " ", 1);
