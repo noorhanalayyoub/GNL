@@ -1,16 +1,21 @@
-static char	*checker(char *ans, char *stash)
+static char    *checker(char *ans, char **stash)
 {
-	size_t	index;
-	char	*holder;
+    size_t    index;
+    char    *holder;
 
-	holder = ans;
-	index = 0;
-	while (ans[index] && ans[index] != '\n')
-		index++;
-	stash = ft_strdup(ans + index);
-	ans = ft_substr(holder, 0, index + 1);
-	free(holder);
-	return (ans);
+    holder = ans;
+    index = 0;
+    while (ans[index] && ans[index] != '\n')
+        index++;
+        if (*stash)
+          free(*stash);
+        if (ans[index] && ans[index] == '\n')
+        *stash = ft_strdup(ans + index + 1);
+        else
+          *stash = NULL;
+    ans = ft_substr(holder, 0, index + 1);
+    free(holder);
+    return (ans);
 }
 
 static char	*append(char *buf, char *ans, char *stash)
