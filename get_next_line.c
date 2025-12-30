@@ -62,32 +62,65 @@ static void	*free_strings(char **stash, char *buf, char *ans)
 	return (NULL);
 }
 
-char	*get_next_line(int fd)
+static int check_stash(char **stash, char **ans)
 {
-	static char	*stash;
-	char		*ans;
-	char		*temp;
-	int		flag;
+    size_t  index;
+    char    *holder;
 
-	if (fd < 0 || BUFFER_SIZE < 1)
-		return (NULL);
-	ans = NULL;
-	temp = malloc(BUFFER_SIZE + 1);
-	if (!temp)
-		return (free_strings(&stash, temp, ans));
-	flag = read(fd, temp, BUFFER_SIZE);
+    if (!stash || !*stash)
+        return (0);
+    holder = *stash;
+    index = 0;
+    while (holder[index])
+    {
+        if (holder[index] == '\n')
+        {
+            *ans = ft_substr(holder, 0, index + 1);
+            if (holder[index + 1] != '\0')
+                *stash = ft_strdup(holder + index + 1);
+            else
+                *stash = NULL;
+            free(holder);
+            return (1);
+        }
+        index++;
+    }
+    *ans = ft_strdup(holder);
+    free(holder);
+    *stash = NULL;
+    return (0);
+}
 
-	while (flag)
-	{
-		if (flag == -1)
-			return (free_strings(&stash, temp, ans));
-		temp[flag] = '\0';
-		if (append(temp, &ans))
-		{
-			free(temp);
-			return (checker(ans, &stash));
-		}
-		flag = read(fd, temp, BUFFER_SIZE);
-	}
-	free_strings(&stash, temp, NULL); return (ans);
+char    *get_next_line(int fd)
+{
+    static char    *stash;
+    char        *ans;
+    char        *temp;
+    int            flag;
+
+    if (fd < 0 || BUFFER_SIZE < 1)
+        return (NULL);
+    ans = NULL;
+    if (check_stash(&stash, &ans))
+    {
+        return (ans);
+    }
+    temp = malloc(BUFFER_SIZE + 1);
+    if (!temp)
+        return (free_strings(&stash, temp, ans));
+    flag = read(fd, temp, BUFFER_SIZE);
+    while (flag)
+    {
+        if (flag == -1)
+            return (free_strings(&stash, temp, ans));
+        temp[flag] = '\0';
+        if (append(temp, &ans) == 1)
+        {
+            free(temp);
+            return (checker(ans, &stash));
+        }
+        flag = read(fd, temp, BUFFER_SIZE);
+    }
+    free_strings(&stash, temp, NULL); // Used the free function instead, sending ans as NULL cuz we don't wanna free
+    return (ans);
 }
