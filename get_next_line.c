@@ -1,26 +1,29 @@
 #include "get_next_line.h"
 
-static char	*checker(char *ans, char **stash)
+static char    *checker(char *ans, char **stash)
 {
-	size_t	index;
-	char	*holder;
+    size_t    index;
+    char    *holder;
 
-	holder = ans;
-	index = 0;
-	while (ans[index] && ans[index] != '\n')
-		index++;
-	if (*stash)
-		free(*stash);
-	if (ans[index] && ans[index] == '\n')
-		*stash = ft_strdup(ans + index + 1);
-	else
-		*stash = NULL;
-	ans = ft_substr(holder, 0, index + 1);
-	free(holder);
-	return (ans);
+    holder = ans;
+    index = 0;
+    while (ans[index] && ans[index] != '\n')
+        index++;
+    if (*stash)
+        free(*stash);
+    if (ans[index] == '\n' && ans[index + 1] != '\0')
+        *stash = ft_strdup(ans + index + 1);
+    else
+        *stash = NULL;
+    if (holder[index] == '\n')
+        ans = ft_substr(holder, 0, index + 1);
+    else
+        ans = ft_substr(holder, 0, index);
+    free(holder);
+    return (ans);
 }
 
-static int	append(char *buf, char **ans)
+static int	append(char *buf, char **ans) // removed stash from here
 {
 	size_t	index;
 	int		flag;
@@ -36,29 +39,29 @@ static int	append(char *buf, char **ans)
 		index++;
 	}
 	*ans = ft_strjoin(holder, buf);
-	if (!(*ans))
-	{
-		return (-1);
-	}
-	free(holder);
+    free(holder);
+    if (!(*ans))
+    {
+        return (-1); // in case of error (we can use it once we check for errors later)
+    }
 	if (flag)
 		return (1);
-	return (0);
+	return (0); // made it return a flag instead(cuz simpler)
 }
 
 static void	*free_strings(char **stash, char *buf, char *ans)
 {
 	if (stash && *stash)
-	{
-		free(*stash);
-		*stash = NULL;
-	}
-	if (buf)
-		free(buf);
-	if (ans)
-	{
-		free(ans);
-	}
+    {
+        free(*stash);
+        *stash = NULL;
+    }
+    if (buf)
+        free(buf);
+    if (ans)
+    {
+        free(ans);
+    }
 	return (NULL);
 }
 
@@ -91,36 +94,36 @@ static int check_stash(char **stash, char **ans)
     return (0);
 }
 
-char    *get_next_line(int fd)
+char	*get_next_line(int fd)
 {
-    static char    *stash;
-    char        *ans;
-    char        *temp;
-    int            flag;
+	static char	*stash;
+	char		*ans;
+	char		*temp;
+	int			flag;
 
-    if (fd < 0 || BUFFER_SIZE < 1)
-        return (NULL);
+	if (fd < 0 || BUFFER_SIZE < 1)
+		return (NULL);
     ans = NULL;
     if (check_stash(&stash, &ans))
     {
         return (ans);
     }
-    temp = malloc(BUFFER_SIZE + 1);
-    if (!temp)
-        return (free_strings(&stash, temp, ans));
-    flag = read(fd, temp, BUFFER_SIZE);
-    while (flag)
-    {
-        if (flag == -1)
-            return (free_strings(&stash, temp, ans));
-        temp[flag] = '\0';
-        if (append(temp, &ans) == 1)
-        {
-            free(temp);
-            return (checker(ans, &stash));
-        }
-        flag = read(fd, temp, BUFFER_SIZE);
-    }
+	temp = malloc(BUFFER_SIZE + 1);
+	if (!temp)
+		return (free_strings(&stash, temp, ans));
+	flag = read(fd, temp, BUFFER_SIZE);
+	while (flag)
+	{
+		if (flag == -1)
+			return (free_strings(&stash, temp, ans));
+		temp[flag] = '\0';
+		if (append(temp, &ans) == 1)
+		{
+			free(temp);
+			return (checker(ans, &stash));
+		}
+		flag = read(fd, temp, BUFFER_SIZE);
+	}
     free_strings(&stash, temp, NULL); // Used the free function instead, sending ans as NULL cuz we don't wanna free
     return (ans);
 }
