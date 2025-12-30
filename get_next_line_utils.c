@@ -1,82 +1,60 @@
-int	totlength(char *str1, char *str2)
-{
-	int	length;
-	int	index;
+#include "get_next_line.h"
 
-	length = 0;
+size_t	ft_strlen(const char *s)
+{
+	size_t	index;
+
 	index = 0;
-	while (str1[index])
-	{
+	if (!s)
+		return (0);
+	while (s[index])
 		index++;
-		length++;
-	}
-	index = 0;
-	while (str2[index])
-	{
-		index++;
-		length++;
-	}
-	return (length);
+	return (index);
 }
 
-void	copystring(int length, char *str1, char *str2, char *joinedstring)
+char	*ft_strjoin(const char *s1, const char *s2)
 {
-	int	index;
-	int	j;
+	char	*joined;
+	size_t	i;
+	size_t	j;
 
-	j = 0;
-	index = 0;
-	while (str1[j])
-	{
-		joinedstring[index] = str1[j];
-		j++;
-		index++;
-	}
-	j = 0;
-	while (index < length && str2[j])
-	{
-		joinedstring[index] = str2[j];
-		j++;
-		index++;
-	}
-	joinedstring[length] = '\0';
-}
-
-char	*ft_strjoin(char *str1, char *str2)
-{
-	int		length;
-	char	*joinedstring;
-
-	if (!str1 || !str2)
+	if (s1 && !s2)
+		return (ft_strdup(s1));
+	if (!s1 && s2)
+		return (ft_strdup(s2));
+	if (!s1 && !s2)
 		return (NULL);
-	length = totlength(str1, str2);
-	joinedstring = malloc((length + 1));
-	if (!joinedstring)
+	i = 0;
+	j = 0;
+	joined = malloc(ft_strlen(s1) + ft_strlen(s2) + 1);
+	if (!joined)
 		return (NULL);
-	if (length == 0)
-	{
-		joinedstring[0] = '\0';
-		return (joinedstring);
-	}
-	copystring(length, str1, str2, joinedstring);
-	return (joinedstring);
+	while (s1[i])
+		joined[j++] = s1[i++];
+	i = 0;
+	while (s2[i])
+		joined[j++] = s2[i++];
+	joined[j] = '\0';
+	return (joined);
 }
 
-char	*ft_strdup(char const *str)
+char	*ft_strdup(const char *str)
 {
-	int		index;
+	size_t	i;
 	char	*newstring;
 
-	index = 0;
+	if (!str)
+		return (NULL);
 	newstring = malloc(ft_strlen(str) + 1);
-	if (str[0] == '\0')
-		*newstring = '\0';
-	while (str[index])
+	if (!newstring)
+		return (NULL);
+	i = 0;
+	while (str[i])
 	{
-		newstring[index] = str[index];
-		index++;
+		newstring[i] = str[i];
+		i++;
 	}
-	newstring[index] = '\0';
+	newstring[i] = '\0';
 	return (newstring);
 }
 
