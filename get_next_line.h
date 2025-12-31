@@ -13,5 +13,6 @@ size_t	ft_strlen(const char *s);
 char	*ft_strjoin(const char *s1, const char *s2);
 char	*ft_strdup(char const *str);
 char	*ft_substr(char const *s, unsigned int start, size_t len);
+void	*free_strings(char **stash, char *buf, char *ans);
 
 #endif

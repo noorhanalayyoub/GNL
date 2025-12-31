@@ -81,3 +81,19 @@ char	*ft_substr(char const *s, unsigned int start, size_t len)
 	new_str[i] = '\0';
 	return (new_str);
 }
+
+void	*free_strings(char **stash, char *buf, char *ans)
+{
+	if (stash && *stash)
+	{
+		free(*stash);
+		*stash = NULL;
+	}
+	if (buf)
+		free(buf);
+	if (ans)
+	{
+		free(ans);
+	}
+	return (NULL);
+}
